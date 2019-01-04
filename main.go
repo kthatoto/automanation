@@ -2,6 +2,8 @@ package main
 
 import (
 	tl "github.com/JoelOtter/termloop"
+	"math/rand"
+	"time"
 )
 
 type Player struct {
@@ -9,7 +11,12 @@ type Player struct {
 	prevX int
 	prevY int
 	level *tl.BaseLevel
-	body  *tl.Rectangle
+}
+
+type Enemy struct {
+	*tl.Entity
+	prevX int
+	prevY int
 }
 
 func (player *Player) Draw(screen *tl.Screen) {
@@ -17,6 +24,10 @@ func (player *Player) Draw(screen *tl.Screen) {
 	x, y := player.Position()
 	player.level.SetOffset(screenWidth/2-x, screenHeight/2-y)
 	player.Entity.Draw(screen)
+}
+
+func (enemy *Enemy) Draw(screen *tl.Screen) {
+	enemy.Entity.Draw(screen)
 }
 
 func (player *Player) Tick(event tl.Event) {
@@ -35,30 +46,51 @@ func (player *Player) Tick(event tl.Event) {
 	}
 }
 
+func (enemy *Enemy) Tick(event tl.Event) {
+	if event.Type == tl.EventKey {
+		enemy.prevX, enemy.prevY = enemy.Position()
+		rand.Seed(time.Now().UnixNano())
+		r := rand.Int()
+		switch r % 5 {
+		case 0:
+			enemy.SetPosition(enemy.prevX+2, enemy.prevY)
+		case 1:
+			enemy.SetPosition(enemy.prevX-2, enemy.prevY)
+		case 2:
+			enemy.SetPosition(enemy.prevX, enemy.prevY-1)
+		case 3:
+			enemy.SetPosition(enemy.prevX, enemy.prevY+1)
+		}
+	}
+}
+
 func (player *Player) Collide(collision tl.Physical) {
 	if _, ok := collision.(*tl.Rectangle); ok {
 		player.SetPosition(player.prevX, player.prevY)
 	}
 }
 
+func (enemy *Enemy) Collide(collision tl.Physical) {
+	if _, ok := collision.(*tl.Rectangle); ok {
+		enemy.SetPosition(enemy.prevX, enemy.prevY)
+	}
+}
+
 func generateMap(l *tl.BaseLevel) {
-	l.AddEntity(tl.NewRectangle(2 * -1, -1, 2 * 1, 8, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * -1, -1, 2 * 8, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 7, -1, 2 * 1, 4, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 7, 4, 2 * 1, 3, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * -1, 6, 2 * 8, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 7, 2, 2 * 7, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 7, 4, 2 * 5, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 13, 2, 2 * 1, 8, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 11, 4, 2 * 1, 6, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 8, 9, 2 * 3, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 7, 9, 2 * 1, 8, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 7, 16, 2 * 11, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 18, 10, 2 * 1, 7, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 13, 9, 2 * 6, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(2 * 10, 12, 2 * 1, 1, tl.ColorRed))
-	l.AddEntity(tl.NewRectangle(2 * 12, 14, 2 * 1, 1, tl.ColorRed))
-	l.AddEntity(tl.NewRectangle(2 * 15, 13, 2 * 1, 1, tl.ColorRed))
+	l.AddEntity(tl.NewRectangle(2*-1, -1, 2*1, 8, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*-1, -1, 2*8, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*7, -1, 2*1, 4, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*7, 4, 2*1, 3, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*-1, 6, 2*8, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*7, 2, 2*7, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*7, 4, 2*5, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*13, 2, 2*1, 8, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*11, 4, 2*1, 6, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*8, 9, 2*3, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*7, 9, 2*1, 8, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*7, 16, 2*11, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*18, 10, 2*1, 7, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2*13, 9, 2*6, 1, tl.ColorBlue))
 }
 
 func main() {
@@ -73,6 +105,16 @@ func main() {
 	player.SetCell(0, 0, &tl.Cell{Bg: tl.ColorGreen})
 	player.SetCell(1, 0, &tl.Cell{Bg: tl.ColorGreen})
 	level.AddEntity(&player)
+	enemies := []*Enemy{
+		&Enemy{Entity: tl.NewEntity(20, 12, 2, 1)},
+		&Enemy{Entity: tl.NewEntity(24, 14, 2, 1)},
+		&Enemy{Entity: tl.NewEntity(30, 13, 2, 1)},
+	}
+	for _, enemy := range enemies {
+		enemy.SetCell(0, 0, &tl.Cell{Bg: tl.ColorRed})
+		enemy.SetCell(1, 0, &tl.Cell{Bg: tl.ColorRed})
+		level.AddEntity(enemy)
+	}
 
 	g.Screen().SetFps(30)
 	g.Screen().SetLevel(level)
