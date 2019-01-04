@@ -42,10 +42,23 @@ func (player *Player) Collide(collision tl.Physical) {
 }
 
 func generateMap(l *tl.BaseLevel) {
-	l.AddEntity(tl.NewRectangle(14, -8, 2, 16, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(-14, -8, 2, 16, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(-14, -8, 28, 1, tl.ColorBlue))
-	l.AddEntity(tl.NewRectangle(-14, 8, 30, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * -1, -1, 2 * 1, 8, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * -1, -1, 2 * 8, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 7, -1, 2 * 1, 4, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 7, 4, 2 * 1, 3, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * -1, 6, 2 * 8, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 7, 2, 2 * 7, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 7, 4, 2 * 5, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 13, 2, 2 * 1, 8, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 11, 4, 2 * 1, 6, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 8, 9, 2 * 3, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 7, 9, 2 * 1, 8, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 7, 16, 2 * 11, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 18, 10, 2 * 1, 7, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 13, 9, 2 * 6, 1, tl.ColorBlue))
+	l.AddEntity(tl.NewRectangle(2 * 10, 12, 2 * 1, 1, tl.ColorRed))
+	l.AddEntity(tl.NewRectangle(2 * 12, 14, 2 * 1, 1, tl.ColorRed))
+	l.AddEntity(tl.NewRectangle(2 * 15, 13, 2 * 1, 1, tl.ColorRed))
 }
 
 func main() {
@@ -57,12 +70,11 @@ func main() {
 		Entity: tl.NewEntity(0, 0, 2, 1),
 		level:  level,
 	}
-	player.SetCell(0, 0, &tl.Cell{Bg: tl.ColorRed})
-	player.SetCell(1, 0, &tl.Cell{Bg: tl.ColorRed})
+	player.SetCell(0, 0, &tl.Cell{Bg: tl.ColorGreen})
+	player.SetCell(1, 0, &tl.Cell{Bg: tl.ColorGreen})
 	level.AddEntity(&player)
 
 	g.Screen().SetFps(30)
-	// g.Screen().EnablePixelMode()
 	g.Screen().SetLevel(level)
 	g.Start()
 }
