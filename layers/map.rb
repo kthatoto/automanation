@@ -13,8 +13,8 @@ class Map
     height.times do |y|
       width.times do |x|
         coordinate = {
-          x: pos[:x] - width / 2 + x,
           y: pos[:y] - height / 2 + y,
+          x: pos[:x] - width / 2 + x,
         }
         if coordinate[:y] < 0 || coordinate[:x] < 0
           @win.setpos(y, x * 2)
@@ -27,6 +27,18 @@ class Map
   end
 
   def get_init_pos
+    pos = { y: 0, x: 0 }
+    catch :find_init_pos do
+      @mapchips.each_with_index do |mapchip_row, y|
+        mapchip_row.each_with_index do |mapchip, x|
+          if @init_pos_chara == mapchip[1]
+            pos = { y: y, x: x }
+            throw :find_init_pos
+          end
+        end
+      end
+    end
+    pos
   end
 
   def input_key(key, **options)
@@ -55,6 +67,10 @@ class Map
         (map_loading = true; next) if line == 'mapstart'
         (map_loading = false; next) if line == 'mapend'
         (@mapchips << line.split; next) if map_loading
+        if line.start_with?('init_pos')
+          @init_pos_chara = line.split('=')[1]
+          next
+        end
       end
     end
   end
