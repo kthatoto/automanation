@@ -38,6 +38,30 @@ class Map
     end
   end
 
+  def input_key(key, **options)
+    pos = options[:pos]
+    prev_pos = pos.dup
+    case key
+    when ?j
+      pos[:y] += 1
+    when ?h
+      pos[:x] -= 1
+    when ?k
+      pos[:y] -= 1
+    when ?l
+      pos[:x] += 1
+    end
+    return prev_pos unless valid_pos?(pos)
+    return pos
+  end
+
+  def valid_pos?(pos)
+    return false if pos[:y] < 0 || pos[:x] < 0
+    mapchip = @mapchips[pos[:y]] && @mapchips[pos[:y]][pos[:x]]
+    return false if [nil, 0].include?(mapchip)
+    true
+  end
+
   private
   def get_mapchips
     @mapchips = []

@@ -22,18 +22,10 @@ begin
     player.draw
 
     key = win.getch
-    case key
-    when ?q
+    if key == ?q
       break
-    when ?j
-      pos[:y] += 1
-    when ?h
-      pos[:x] -= 1
-    when ?k
-      pos[:y] -= 1
-    when ?l
-      pos[:x] += 1
     end
+    pos = map.input_key(key, pos: pos)
     sleep 0.01
   end
 ensure
