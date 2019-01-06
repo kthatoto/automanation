@@ -11,33 +11,32 @@ class Color
     Curses.init_pair(@@color_ids[:red], Curses::COLOR_BLACK, Curses::COLOR_RED)
     Curses.init_pair(@@color_ids[:white], Curses::COLOR_BLACK, Curses::COLOR_WHITE)
   end
-  def initialize(win)
+  def initialize
     color_initialize
-    @win = win
   end
-  def black o
-    common(0, o)
+  def black(win, o)
+    common(0, win, o)
   end
-  def ground o
-    common(1, o)
+  def ground(win, o)
+    common(1, win, o)
   end
-  def green o
-    common(@@color_ids[:green], o)
+  def green(win, o)
+    common(@@color_ids[:green], win, o)
   end
-  def blue o
-    common(@@color_ids[:blue], o)
+  def blue(win, o)
+    common(@@color_ids[:blue], win, o)
   end
-  def red o
-    common(@@color_ids[:red], o)
+  def red(win, o)
+    common(@@color_ids[:red], win, o)
   end
-  def white o
-    common(@@color_ids[:white], o)
+  def white(win, o)
+    common(@@color_ids[:white], win, o)
   end
 
   private
-  def common(i, o)
-    @win.attron(Curses.color_pair(i))
-    @win.addstr(o)
-    @win.attroff(Curses.color_pair(i))
+  def common(i, win, o)
+    win.attron(Curses.color_pair(i))
+    win.addstr(o)
+    win.attroff(Curses.color_pair(i))
   end
 end

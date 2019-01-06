@@ -89,7 +89,6 @@ class Map
         break
       end
     end
-    # prev_locationを参考に移動したlocationでの初期位置を計算してposにセット
     pos
   end
 
@@ -104,9 +103,9 @@ class Map
       @win.setpos(y, x * 2)
       case chip_type
       when @@chip_types[:ground]
-        $color.ground("  ")
+        $color.ground(@win, "  ")
       when @@chip_types[:location_change]
-        $color.white("  ")
+        $color.white(@win, "  ")
       end
     rescue
     end

@@ -9,9 +9,9 @@ Curses::noecho
 Curses.curs_set(0)
 
 begin
-  win = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
+  win = Curses::Window.new(Curses.lines - 10, Curses.cols, 0, 0)
   win.nodelay = 1
-  $color = Color.new(win)
+  $color = Color.new
   map = Map.new(win, "town")
   player = Player.new(win)
   pos = map.get_init_pos
