@@ -1,7 +1,7 @@
 require 'curses'
 class Color
   @@color_ids = {
-    green: 10, blue: 11, red: 12,
+    green: 10, blue: 11, red: 12, white: 13
   }
   def color_initialize
     Curses.start_color
@@ -9,6 +9,7 @@ class Color
     Curses.init_pair(@@color_ids[:green], Curses::COLOR_BLACK, Curses::COLOR_GREEN)
     Curses.init_pair(@@color_ids[:blue], Curses::COLOR_BLACK, Curses::COLOR_BLUE)
     Curses.init_pair(@@color_ids[:red], Curses::COLOR_BLACK, Curses::COLOR_RED)
+    Curses.init_pair(@@color_ids[:white], Curses::COLOR_BLACK, Curses::COLOR_WHITE)
   end
   def initialize(win)
     color_initialize
@@ -28,6 +29,9 @@ class Color
   end
   def red o
     common(@@color_ids[:red], o)
+  end
+  def white o
+    common(@@color_ids[:white], o)
   end
 
   private
