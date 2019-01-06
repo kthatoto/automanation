@@ -6,6 +6,6 @@ class Player
   end
   def draw
     @win.setpos(@height / 2, @width - @width % 2)
-    $color.blue("  ")
+    $color.green("  ")
   end
 end

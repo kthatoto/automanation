@@ -16,7 +16,7 @@ class Map
         }
         if coordinate[:y] < 0 || coordinate[:x] < 0
           @win.setpos(y, x * 2)
-          $color.green("  ")
+          $color.black("  ")
           next
         end
         draw_by_coordinate(coordinate, y, x)
@@ -29,13 +29,12 @@ class Map
       mapchip = @mapchips[coordinate[:y]][coordinate[:x]]
       @win.setpos(y, x * 2)
       case mapchip
-      when 1
-        $color.red("  ")
-      when nil
+      when 0, nil
         raise
+      when 1
+       $color.ground("  ")
       end
     rescue
-      $color.green("  ")
     end
   end
 
