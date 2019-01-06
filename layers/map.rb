@@ -1,10 +1,12 @@
 class Map
   @@mapchips_directory = "./data/maps"
+  @@invalid_chip_types = ['0', nil, false]
   def initialize(win)
     @win = win
     @location = "town"
-    get_mapchips
+    load_map
   end
+
   def draw(pos)
     height = @win.maxy
     width = @win.maxx / 2
@@ -24,18 +26,7 @@ class Map
     end
   end
 
-  def draw_by_coordinate(coordinate, y, x)
-    begin
-      mapchip = @mapchips[coordinate[:y]][coordinate[:x]]
-      @win.setpos(y, x * 2)
-      case mapchip
-      when 0, nil
-        raise
-      when 1
-       $color.ground("  ")
-      end
-    rescue
-    end
+  def get_init_pos
   end
 
   def input_key(key, **options)
@@ -55,20 +46,46 @@ class Map
     return pos
   end
 
+  private
+  def load_map
+    @mapchips = []
+    map_loading = false
+    File.open("#{@@mapchips_directory}/#{@location}.txt") do |file|
+      file.read.split("\n").each do |line|
+        (map_loading = true; next) if line == 'mapstart'
+        (map_loading = false; next) if line == 'mapend'
+        (@mapchips << line.split; next) if map_loading
+      end
+    end
+  end
+
+  def draw_by_coordinate(coordinate, y, x)
+    begin
+      cy = coordinate[:y]
+      cx = coordinate[:x]
+      mapchip = get_mapchip(cy, cx)
+      raise if mapchip.nil?
+      chip_type = mapchip[0]
+      raise if @@invalid_chip_types.include?(chip_type)
+      @win.setpos(y, x * 2)
+      case chip_type
+      when "1"
+       $color.ground("  ")
+      end
+    rescue
+    end
+  end
+
   def valid_pos?(pos)
     return false if pos[:y] < 0 || pos[:x] < 0
-    mapchip = @mapchips[pos[:y]] && @mapchips[pos[:y]][pos[:x]]
-    return false if [nil, 0].include?(mapchip)
+    mapchip = get_mapchip(pos[:y], pos[:x])
+    return false if mapchip.nil?
+    chip_type = mapchip[0]
+    return false if @@invalid_chip_types.include?(chip_type)
     true
   end
 
-  private
-  def get_mapchips
-    @mapchips = []
-    File.open("#{@@mapchips_directory}/#{@location}.txt") do |file|
-      file.read.split("\n").each do |line|
-        @mapchips << line.split.map(&:to_i)
-      end
-    end
+  def get_mapchip(y, x)
+    @mapchips[y] && @mapchips[y][x]
   end
 end

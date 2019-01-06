@@ -11,10 +11,10 @@ Curses.curs_set(0)
 begin
   win = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
   win.nodelay = 1
-  pos = { x: 0, y: 0 }
   $color = Color.new(win)
   map = Map.new(win)
   player = Player.new(win)
+  pos = map.get_init_pos
   loop do
     win.clear
 
@@ -22,9 +22,7 @@ begin
     player.draw
 
     key = win.getch
-    if key == ?q
-      break
-    end
+    break if key == ?q
     pos = map.input_key(key, pos: pos)
     sleep 0.01
   end
