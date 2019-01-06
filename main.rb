@@ -8,18 +8,26 @@ Curses.init_screen
 Curses::noecho
 Curses.curs_set(0)
 
+STATUS_AREA_HEIGHT = 10
+
 begin
-  win = Curses::Window.new(Curses.lines - 10, Curses.cols, 0, 0)
+  win = Curses::Window.new(Curses.lines - STATUS_AREA_HEIGHT, Curses.cols, 0, 0)
+  swin = Curses::Window.new(STATUS_AREA_HEIGHT, win.maxx, win.maxy, 0)
   win.nodelay = 1
   $color = Color.new
   map = Map.new(win, "town")
-  player = Player.new(win)
   pos = map.get_init_pos
+  player = Player.new(win)
+  status = Status.new(swin)
   loop do
     win.clear
+    swin.clear
 
     map.draw(pos)
     player.draw
+
+    status.draw
+    swin.refresh
 
     key = win.getch
     break if key == ?q
