@@ -46,7 +46,12 @@ class Map
     when ?l
       pos[:x] += 1
     end
-    return prev_pos unless valid_pos?(pos)
+    if !valid_pos?(pos)
+      player = options[:player]
+      player.damage(1)
+      $logger.put("壁にあたった！1ダメージ！残りHP:#{player.hp}")
+      return prev_pos
+    end
     pos = change_location(pos) if location_changing?(pos)
     pos
   end
@@ -100,12 +105,11 @@ class Map
       raise if mapchip.nil?
       chip_type = mapchip[0]
       raise if @@invalid_chip_type_values.include?(chip_type)
-      @win.setpos(y, x * 2)
       case chip_type
       when @@chip_types[:ground]
-        $color.ground(@win, "  ")
+        $color.ground(@win, y, x * 2, "  ")
       when @@chip_types[:location_change]
-        $color.white(@win, "  ")
+        $color.white(@win, y, x * 2, "  ")
       end
     rescue
     end

@@ -1,22 +1,22 @@
 class Status
-  @@player_status_area_width = 40
-  def initialize(win)
+  def initialize(win, player_status_width)
     @win = win
+    @player_status_width = player_status_width
   end
 
-  def draw
-    height = @win.maxy
-    @win.setpos(0, 0)
-    $color.underline(@win, " " * @win.maxx)
-    (1..(height - 1)).to_a.each do |y|
-      @win.setpos(y, 0)
-      $color.normal(@win, " " * @win.maxx)
-      @win.maxx.times do |x|
-        @win.setpos(y, x)
-        $color.normal(@win, (x % 10).to_s)
-      end
-      @win.setpos(y, @@player_status_area_width)
-      $color.normal(@win, '┃')
+  def draw(pos, player)
+    height = @win.maxy - 1
+    $color.underline(@win, 0, 0, " " * @win.maxx)
+    (1..height).to_a.each do |y|
+      $color.normal(@win, y, 0, " " * @win.maxx)
+      $color.normal(@win, y, @player_status_width, '┃')
     end
+
+    $color.normal(@win, 1, 1, "HP")
+    $color.black(@win, 1, 4, " " * 15)
+    $color.green(@win, 1, 4, " " * (15 * player.hp / player.max_hp).to_i)
+    $color.normal(@win, 2, 4, "#{player.hp}/#{player.max_hp}")
+
+    $color.normal(@win, height, 1, "y:#{pos[:y]},x:#{pos[:x]}")
   end
 end
