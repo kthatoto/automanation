@@ -14,6 +14,7 @@ begin
   win = Curses::Window.new(Curses.lines - STATUS_AREA_HEIGHT, Curses.cols, 0, 0)
   swin = Curses::Window.new(STATUS_AREA_HEIGHT, win.maxx, win.maxy, 0)
   win.nodelay = 1
+  swin.nodelay = 1
   $color = Color.new
   map = Map.new(win, "town")
   pos = map.get_init_pos

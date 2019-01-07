@@ -1,12 +1,13 @@
 require 'curses'
 class Color
   @@color_ids = {
-    white: 10, green: 11, blue: 12, red: 13
+    white: 10, normal: 11, green: 12, blue: 13, red: 14
   }
   def color_initialize
     Curses.start_color
     Curses.use_default_colors
     Curses.init_pair(@@color_ids[:white], Curses::COLOR_BLACK, Curses::COLOR_WHITE)
+    Curses.init_pair(@@color_ids[:normal], Curses::COLOR_WHITE, Curses::COLOR_BLACK)
     Curses.init_pair(@@color_ids[:green], Curses::COLOR_BLACK, Curses::COLOR_GREEN)
     Curses.init_pair(@@color_ids[:blue], Curses::COLOR_BLACK, Curses::COLOR_BLUE)
     Curses.init_pair(@@color_ids[:red], Curses::COLOR_BLACK, Curses::COLOR_RED)
@@ -20,22 +21,15 @@ class Color
   def ground(win, o)
     common(1, win, o)
   end
-  def white(win, o)
-    common(@@color_ids[:white], win, o)
-  end
-  def green(win, o)
-    common(@@color_ids[:green], win, o)
-  end
-  def blue(win, o)
-    common(@@color_ids[:blue], win, o)
-  end
-  def red(win, o)
-    common(@@color_ids[:red], win, o)
+  @@color_ids.each do |color, id|
+    define_method(color) do |win, o|
+      common(id, win, o)
+    end
   end
   def underline(win, o)
     win.attron(Curses::A_UNDERLINE)
     win.addstr(o)
-    win.attroff(Curses::A_STANDOUT)
+    win.attroff(Curses::A_UNDERLINE)
   end
 
   private
