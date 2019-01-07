@@ -10,7 +10,7 @@ Curses.curs_set(0)
 
 BOTTOM_WIDOW_HEIGHT = 10
 PLAYER_STATUS_WIDTH = 41
-RIGHT_WINDOW_WIDTH = 25
+RIGHT_WINDOW_WIDTH = 30
 
 begin
   win = Curses::Window.new(

@@ -12,9 +12,9 @@ class Menu
     $color.normal(@win, 0, 1, "(M)enu, (L)ist")
     case @status
     when :menu
-      $color.normal(@win, 1, 1, "Menu")
+      draw_menu
     when :list
-      $color.normal(@win, 1, 1, "List")
+      draw_list
     end
   end
 
@@ -26,5 +26,12 @@ class Menu
     when ?M
       @status = :menu
     end
+  end
+
+  private
+  def draw_menu
+  end
+
+  def draw_list
   end
 end
