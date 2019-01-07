@@ -49,7 +49,7 @@ class Map
     if !valid_pos?(pos)
       player = options[:player]
       player.damage(1)
-      $logger.put("壁にあたった！1ダメージ！残りHP:#{player.hp}")
+      $logger.put(Log.new("壁にあたった！1ダメージ！残りHP:#{player.hp}"))
       return prev_pos
     end
     pos = change_location(pos) if location_changing?(pos)

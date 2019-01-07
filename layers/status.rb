@@ -1,7 +1,6 @@
 class Status
-  def initialize(win, player_status_width)
+  def initialize(win)
     @win = win
-    @player_status_width = player_status_width
   end
 
   def draw(pos, player)
@@ -9,9 +8,9 @@ class Status
     $color.underline(@win, 0, 0, " " * @win.maxx)
     (1..height).to_a.each do |y|
       $color.normal(@win, y, 0, " " * @win.maxx)
-      $color.normal(@win, y, @player_status_width, '┃')
     end
 
+    # HP
     $color.normal(@win, 1, 1, "HP")
     $color.black(@win, 1, 4, " " * 15)
     $color.green(@win, 1, 4, " " * (15 * player.hp / player.max_hp).to_i)

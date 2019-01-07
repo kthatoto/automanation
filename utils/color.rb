@@ -33,6 +33,11 @@ class Color
     win.addstr(o)
     win.attroff(Curses::A_UNDERLINE)
   end
+  def normal_with_underline(win, y, x, o)
+    win.attron(Curses::A_UNDERLINE)
+    common(@@color_ids[:normal], win, y, x, o)
+    win.attroff(Curses::A_UNDERLINE)
+  end
 
   private
   def common(i, win, y, x, o)

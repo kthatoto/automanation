@@ -1,20 +1,29 @@
 class Logger
-  def initialize(win, player_status_width)
+  def initialize(win)
     @win = win
-    @player_status_width = player_status_width
-    @corner_pos = { y: 1, x: @player_status_width + 1 }
     @logs = []
   end
   def draw
     height = @win.maxy - 1
-    width = @win.maxx - @corner_pos[:x]
-    @logs.reverse.each_with_index do |log, i|
-      $color.normal(@win, @corner_pos[:y] + i, @corner_pos[:x], log)
-      break if height <= i + 1
+    width = @win.maxx
+    $color.underline(@win, 0, 0, " " * @win.maxx)
+    (1..height).to_a.each do |y|
+      $color.normal(@win, y, 0, "┃" + (" " * (@win.maxx - 1)))
+    end
+    logy = 1
+    @logs.reverse.each do |log|
+      $color.normal(@win, logy, 1, log.get_message)
+      logy += 1
+      break if logy - 1 >= height
     end
   end
 
   def put(log)
+    raise unless Log === log
     @logs << log
+  end
+
+  def stdout(message)
+    `echo '#{message}' >> .log`
   end
 end
