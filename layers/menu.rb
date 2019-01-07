@@ -10,6 +10,12 @@ class Menu
     end
     $color.normal_with_underline(@win, height, 0, "┃" + (" " * (@win.maxx - 1)))
     $color.normal(@win, 0, 1, "(M)enu, (L)ist")
+    case @status
+    when :menu
+      $color.normal(@win, 1, 1, "Menu")
+    when :list
+      $color.normal(@win, 1, 1, "List")
+    end
   end
 
   def input_key(key)
