@@ -13,7 +13,7 @@ class Map
     load_location
   end
 
-  def draw(pos)
+  def draw(pos:)
     height = @win.maxy
     width = @win.maxx / 2
     height.times do |y|
@@ -33,9 +33,10 @@ class Map
   end
 
   def input_key(key, **options)
-    pos = options[:pos]
-    return pos if key.nil?
-    prev_pos = pos.dup
+    pos = options[:pos].dup
+    player = options[:player]
+    return if key.nil?
+    return if !player.survived?
     case key
     when ?j
       pos[:y] += 1
@@ -47,16 +48,22 @@ class Map
       pos[:x] += 1
     end
     if !valid_pos?(pos)
-      player = options[:player]
       player.damage(1)
-      $logger.put(Log.new("壁にあたった！1ダメージ！残りHP:#{player.hp}"))
-      return prev_pos
+      $logger.dispatch(
+        Log.new("壁にあたった！1ダメージ！残りHP:#{player.hp}"),
+        100
+      )
+      return
     end
     if exists_object?(pos) && !exists_treadable_object?(pos)
-      return prev_pos
+      return
     end
-    pos = change_location(pos) if location_changing?(pos)
-    pos
+    if location_changing?(pos)
+      new_pos = change_location(pos)
+      options[:tposes] << {pos: new_pos, priority: 60}
+      return
+    end
+    options[:tposes] << {pos: pos, priority: 40}
   end
 
   private
@@ -98,8 +105,7 @@ class Map
     load_location
     @locations.each do |meta_char, location|
       if prev_location == location
-        pos = find_pos_by_meta_char(meta_char.to_s) || { y: 0, x: 0 }
-        break
+        return find_pos_by_meta_char(meta_char.to_s) || { y: 0, x: 0 }
       end
     end
     pos

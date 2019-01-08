@@ -9,19 +9,24 @@ class Menu
       $color.normal(@win, y, 0, "┃" + (" " * (@win.maxx - 1)))
     end
     $color.normal_with_underline(@win, height, 0, "┃" + (" " * (@win.maxx - 1)))
-    $color.send(
-      @status == :menu ? 'normal_with_bold' : 'normal',
-      @win, 0, 1, "(M)enu"
-    )
-    $color.send(
-      @status == :list ? 'normal_with_bold' : 'normal',
-      @win, 0, 8, "(L)ist"
-    )
+
+    if @status != :respawn
+      $color.send(
+        @status == :menu ? 'normal_with_bold' : 'normal',
+        @win, 0, 1, "(M)enu"
+      )
+      $color.send(
+        @status == :list ? 'normal_with_bold' : 'normal',
+        @win, 0, 8, "(L)ist"
+      )
+    end
     case @status
     when :menu
       draw_menu
     when :list
       draw_list
+    when :respawn
+      draw_respawn
     end
   end
 
@@ -33,6 +38,10 @@ class Menu
     when ?M
       @status = :menu
     end
+  end
+
+  def change_status(status)
+    @status = :respawn if status == :respawn
   end
 
   private
@@ -47,5 +56,9 @@ class Menu
       $color.normal(@win, listy, 1, line)
       listy += 1
     end
+  end
+
+  def draw_respawn
+    $color.normal(@win, 1, 1, "(R)espawn")
   end
 end

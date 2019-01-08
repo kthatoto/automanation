@@ -3,7 +3,7 @@ class Status
     @win = win
   end
 
-  def draw(pos, player)
+  def draw(pos:, player:)
     height = @win.maxy - 1
     $color.underline(@win, 0, 0, " " * @win.maxx)
     (1..height).to_a.each do |y|

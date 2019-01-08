@@ -38,24 +38,31 @@ begin
   pos = map.get_init_pos
   player = Player.new(win)
   status = Status.new(swin)
-  $logger = Logger.new(logwin)
   menu = Menu.new(rightwin)
+  $logger = Logger.new(logwin)
+
   loop do
     wins.map(&:clear)
-
-    map.draw(pos)
+    map.draw(pos: pos)
     player.draw
-    status.draw(pos, player)
-    $logger.draw
+    status.draw(pos: pos, player: player)
     menu.draw
-
+    $logger.draw
     wins.map(&:refresh)
 
     key = win.getch
     break if key == ?q
-    pos = map.input_key(key, pos: pos, player: player)
-    menu.input_key(key)
-    player.turn_direction(key)
+    if !key.nil?
+      pos.freeze
+      tposes = []
+      player.input_key(key, tposes: tposes, pos: pos)
+      map.input_key(key, tposes: tposes, pos: pos, player: player)
+      menu.input_key(key)
+      new_pos = tposes.max_by{|tpos| tpos[:priority]}
+      pos = new_pos[:pos] if !new_pos.nil?
+    end
+
+    $logger.put
     sleep 0.05
   end
 ensure

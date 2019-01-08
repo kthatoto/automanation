@@ -2,6 +2,7 @@ class Logger
   def initialize(win)
     @win = win
     @logs = []
+    @tlogs = []
   end
   def draw
     height = @win.maxy - 1
@@ -18,9 +19,18 @@ class Logger
     end
   end
 
-  def put(log)
+  def dispatch(log, priority)
     raise unless Log === log
-    @logs << log
+    @tlogs << {log: log, priority: priority}
+  end
+
+  def put
+    @logs += @tlogs.sort_by{|tlog|
+      tlog[:priority]
+    }.reverse.map{|tlog|
+      tlog[:log]
+    }
+    @tlogs = []
   end
 
   def stdout(message)
