@@ -9,7 +9,7 @@ class Map
 
   def initialize(win, init_location)
     @win = win
-    @location = init_location
+    @current_location = init_location
     load_location
   end
 
@@ -58,12 +58,13 @@ class Map
 
   private
   def load_location
+    $current_object_list.clear(:map)
     @mapchips = []
     @locations = {}
     @init_pos_char = nil
     map_loading = false
     locations_loading = false
-    File.open("#{@@mapchips_directory}/#{@location}.txt") do |file|
+    File.open("#{@@mapchips_directory}/#{@current_location}.txt") do |file|
       file.read.split("\n").each do |line|
         (map_loading = true; next) if line == 'mapstart'
         (map_loading = false; next) if line == 'mapend'
@@ -77,6 +78,10 @@ class Map
         if locations_loading
           location = line.split('=')
           @locations[location[0].to_sym] = location[1]
+          pos = find_pos_by_meta_char(location[0])
+          $current_object_list.push(:map, LocationChange.new(
+            @current_location, pos[:y], pos[:x], location[1]
+          ))
           next
         end
       end
@@ -84,9 +89,9 @@ class Map
   end
 
   def change_location(pos)
-    prev_location = @location.dup
+    prev_location = @current_location.dup
     chip_meta = get_mapchip(pos[:y], pos[:x])[1]
-    @location = @locations[chip_meta.to_sym]
+    @current_location = @locations[chip_meta.to_sym]
     load_location
     @locations.each do |meta_char, location|
       if prev_location == location
@@ -109,7 +114,7 @@ class Map
       when @@chip_types[:ground]
         $color.ground(@win, y, x * 2, "  ")
       when @@chip_types[:location_change]
-        $color.white(@win, y, x * 2, "  ")
+        $color.bg_white(@win, y, x * 2, "  ")
       end
     rescue
     end

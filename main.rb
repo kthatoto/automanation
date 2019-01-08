@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'curses'
-['utils', 'layers', 'resources'].each {|directory|
+['utils', 'layers', 'resources', 'resources/objects'].each {|directory|
   Dir["./#{directory}/*.rb"].each {|file| require file}
 }
 
@@ -32,6 +32,7 @@ begin
   wins = [win, swin, logwin, rightwin]
   win.nodelay = 1
 
+  $current_object_list = ObjectList.new
   $color = Color.new
   map = Map.new(win, "town")
   pos = map.get_init_pos

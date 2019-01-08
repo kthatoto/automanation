@@ -9,7 +9,14 @@ class Menu
       $color.normal(@win, y, 0, "┃" + (" " * (@win.maxx - 1)))
     end
     $color.normal_with_underline(@win, height, 0, "┃" + (" " * (@win.maxx - 1)))
-    $color.normal(@win, 0, 1, "(M)enu, (L)ist")
+    $color.send(
+      @status == :menu ? 'normal_with_bold' : 'normal',
+      @win, 0, 1, "(M)enu"
+    )
+    $color.send(
+      @status == :list ? 'normal_with_bold' : 'normal',
+      @win, 0, 8, "(L)ist"
+    )
     case @status
     when :menu
       draw_menu
@@ -33,5 +40,12 @@ class Menu
   end
 
   def draw_list
+    listy = 2
+    $current_object_list.all_objects.each do |o|
+      line = "[y:#{o.y.to_s.rjust(3)}, x:#{o.x.to_s.rjust(3)}]"
+      line << " #{o.dest}"
+      $color.normal(@win, listy, 1, line)
+      listy += 1
+    end
   end
 end

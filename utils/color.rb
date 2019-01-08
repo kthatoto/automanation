@@ -1,18 +1,18 @@
 require 'curses'
 class Color
+  include Curses
   @@color_ids = {
-    white: 10, green: 11, blue: 12, red: 13,
-    normal: 20, strong: 21,
+    bg_white: 10, bg_green: 11, bg_blue: 12, bg_red: 13,
+    normal: 20,
   }
   def color_initialize
-    Curses.start_color
-    Curses.use_default_colors
-    Curses.init_pair(@@color_ids[:white], Curses::COLOR_BLACK, Curses::COLOR_WHITE)
-    Curses.init_pair(@@color_ids[:green], Curses::COLOR_BLACK, Curses::COLOR_GREEN)
-    Curses.init_pair(@@color_ids[:blue], Curses::COLOR_BLACK, Curses::COLOR_BLUE)
-    Curses.init_pair(@@color_ids[:red], Curses::COLOR_BLACK, Curses::COLOR_RED)
-    Curses.init_pair(@@color_ids[:normal], Curses::COLOR_WHITE, Curses::COLOR_BLACK)
-    Curses.init_pair(@@color_ids[:strong], Curses::COLOR_RED, Curses::COLOR_BLACK)
+    start_color
+    use_default_colors
+    init_pair(@@color_ids[:bg_white], COLOR_BLACK, COLOR_WHITE)
+    init_pair(@@color_ids[:bg_green], COLOR_BLACK, COLOR_GREEN)
+    init_pair(@@color_ids[:bg_blue], COLOR_BLACK, COLOR_BLUE)
+    init_pair(@@color_ids[:bg_red], COLOR_BLACK, COLOR_RED)
+    init_pair(@@color_ids[:normal], COLOR_WHITE, COLOR_BLACK)
   end
   def initialize
     color_initialize
@@ -37,6 +37,11 @@ class Color
     win.attron(Curses::A_UNDERLINE)
     common(@@color_ids[:normal], win, y, x, o)
     win.attroff(Curses::A_UNDERLINE)
+  end
+  def normal_with_bold(win, y, x, o)
+    win.attron(Curses::A_BOLD)
+    common(@@color_ids[:normal], win, y, x, o)
+    win.attroff(Curses::A_BOLD)
   end
 
   private

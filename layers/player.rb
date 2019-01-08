@@ -11,7 +11,7 @@ class Player
   def draw
     height = @win.maxy
     width = @win.maxx / 2
-    $color.green(@win, height / 2, width - width % 2, @direction[:char])
+    $color.bg_green(@win, height / 2, width - width % 2, @direction[:char])
   end
 
   def damage(amount)
