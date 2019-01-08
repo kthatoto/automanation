@@ -1,3 +1,3 @@
 class Object
-  attr_reader :location, :y, :x
+  attr_reader :location, :y, :x, :treadable
 end

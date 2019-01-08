@@ -52,6 +52,9 @@ class Map
       $logger.put(Log.new("壁にあたった！1ダメージ！残りHP:#{player.hp}"))
       return prev_pos
     end
+    if exists_object?(pos) && !exists_treadable_object?(pos)
+      return prev_pos
+    end
     pos = change_location(pos) if location_changing?(pos)
     pos
   end
@@ -108,9 +111,9 @@ class Map
       cx = coordinate[:x]
       mapchip = get_mapchip(cy, cx)
       raise if mapchip.nil?
-      chip_type = mapchip[0]
-      raise if @@invalid_chip_type_values.include?(chip_type)
-      case chip_type
+      chip_type_value = mapchip[0]
+      raise if @@invalid_chip_type_values.include?(chip_type_value)
+      case chip_type_value
       when @@chip_types[:ground]
         $color.ground(@win, y, x * 2, "  ")
       when @@chip_types[:location_change]
@@ -124,9 +127,26 @@ class Map
     return false if pos[:y] < 0 || pos[:x] < 0
     mapchip = get_mapchip(pos[:y], pos[:x])
     return false if mapchip.nil?
-    chip_type = mapchip[0]
-    return false if @@invalid_chip_type_values.include?(chip_type)
+    chip_type_value = mapchip[0]
+    return false if @@invalid_chip_type_values.include?(chip_type_value)
     true
+  end
+
+  def exists_object?(pos)
+    return false if pos[:y] < 0 || pos[:x] < 0
+    mapchip = get_mapchip(pos[:y], pos[:x])
+    return false if mapchip.nil?
+    chip_type_value = mapchip[0]
+    not_object_types = [:ground, :wall]
+    return false if not_object_types.find{|type| @@chip_types[type] == chip_type_value}
+    true
+  end
+
+  def exists_treadable_object?(pos)
+    return false if pos[:y] < 0 || pos[:x] < 0
+    object = $current_object_list.get_object_by_coordinate(pos[:y], pos[:x])
+    return false if object.nil?
+    object.treadable
   end
 
   def location_changing?(pos)

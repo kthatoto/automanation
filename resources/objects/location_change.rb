@@ -5,5 +5,6 @@ class LocationChange < Object
     @y = y
     @x = x
     @dest = dest
+    @treadable = true
   end
 end

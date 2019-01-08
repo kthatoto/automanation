@@ -19,4 +19,9 @@ class ObjectList
   def clear_all
     @objects = {}
   end
+  def get_object_by_coordinate(y, x)
+    all_objects.find{|object|
+      object.y == y && object.x == x
+    }
+  end
 end
