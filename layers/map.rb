@@ -49,7 +49,7 @@ class Map
     end
     if !valid_pos?(pos)
       player.damage(1)
-      $logger.dispatch(
+      $logger.push(
         Log.new("壁にあたった！1ダメージ！残りHP:#{player.hp}"),
         100
       )
@@ -64,6 +64,19 @@ class Map
       return
     end
     options[:tposes] << {pos: pos, priority: 40}
+  end
+
+  def dispatch(actions, **options)
+    actions.each do |action|
+      case action.type
+      when :respawn
+        @current_location = action.location
+        load_location
+        new_pos = get_init_pos
+        options[:tposes] << {pos: new_pos, priority: 200}
+      end
+    end
+    $store.clear(:map)
   end
 
   private

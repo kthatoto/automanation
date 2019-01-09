@@ -19,7 +19,7 @@ class Logger
     end
   end
 
-  def dispatch(log, priority)
+  def push(log, priority)
     raise unless Log === log
     @tlogs << {log: log, priority: priority}
   end

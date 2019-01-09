@@ -7,6 +7,7 @@ class Player
     @status = { code: :none, char: "  " }
     @max_hp = 10
     @hp = @max_hp
+    @respawn_location = 'home'
   end
   def draw
     height = @win.maxy
@@ -18,7 +19,8 @@ class Player
     @hp = [@hp - amount, 0].max
     if @hp == 0
       handle_status(nil, :dead)
-      $logger.dispatch(Log.new("死にました..."), 90)
+      $store.push(:menu, Action.new(:player_died))
+      $logger.push(Log.new("死にました..."), 90)
     end
   end
 
@@ -27,7 +29,18 @@ class Player
       handle_status(key, nil)
     else
       options[:tposes] << {pos: options[:pos], priority: 100}
+      case key
+      when ?R
+        respawn
+      end
     end
+  end
+
+  def respawn
+    @hp = @max_hp
+    @status = { code: :none, char: "  " }
+    $store.push(:map, Action.new(:respawn, location: @respawn_location))
+    $store.push(:menu, Action.new(:respawn))
   end
 
   def survived?

@@ -1,6 +1,6 @@
 require 'bundler/setup'
 require 'curses'
-['utils', 'layers', 'resources', 'resources/objects'].each {|directory|
+['utils', 'layers', 'resources', 'resources/objects', 'store'].each {|directory|
   Dir["./#{directory}/*.rb"].each {|file| require file}
 }
 
@@ -40,6 +40,7 @@ begin
   status = Status.new(swin)
   menu = Menu.new(rightwin)
   $logger = Logger.new(logwin)
+  $store = Store.new
 
   loop do
     wins.map(&:clear)
@@ -50,17 +51,21 @@ begin
     $logger.draw
     wins.map(&:refresh)
 
+    tposes = []
+    menu.dispatch($store[:menu])
+    map.dispatch($store[:map], tposes: tposes)
+
     key = win.getch
     break if key == ?q
     if !key.nil?
       pos.freeze
-      tposes = []
       player.input_key(key, tposes: tposes, pos: pos)
       map.input_key(key, tposes: tposes, pos: pos, player: player)
       menu.input_key(key)
-      new_pos = tposes.max_by{|tpos| tpos[:priority]}
-      pos = new_pos[:pos] if !new_pos.nil?
     end
+    new_pos = tposes.max_by{|tpos| tpos[:priority]}
+    pos = new_pos[:pos] if !new_pos.nil?
+    tposes = []
 
     $logger.put
     sleep 0.05

@@ -1,7 +1,8 @@
 class Menu
+  @@init_status = :menu
   def initialize(win)
     @win = win
-    @status = :menu
+    @status = @@init_status
   end
   def draw
     height = @win.maxy
@@ -40,8 +41,16 @@ class Menu
     end
   end
 
-  def change_status(status)
-    @status = :respawn if status == :respawn
+  def dispatch(actions)
+    actions.each do |action|
+      case action.type
+      when :player_died
+        @status = :respawn
+      when :respawn
+        @status = @@init_status
+      end
+    end
+    $store.clear(:menu)
   end
 
   private
