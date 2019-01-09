@@ -1,4 +1,4 @@
-mapstart
+map_start
 00 00 00 00 10 10 10 10 10 00 00 00 00
 00 00 00 10 10 10 10 10 10 10 00 00 00
 00 00 10 10 10 10 10 10 10 10 10 00 00
@@ -8,8 +8,8 @@ mapstart
 10 10 10 10 10 10 10 10 10 10 10 1I 10
 10 10 10 10 10 10 10 10 10 10 10 10 10
 00 00 00 00 00 00 5A 00 00 00 00 00 00
-mapend
+map_end
 initpos=I
-locationsstart
+locations_start
 A=town
-locationsend
+locations_end

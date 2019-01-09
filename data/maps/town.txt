@@ -1,7 +1,7 @@
-mapstart
+map_start
 00 00 00 00 00 00 5A 00 00 00 00 00 00
 10 10 10 10 10 10 10 10 10 10 10 10 10
-10 10 10 10 10 10 10 10 10 10 10 10 10
+10 2a 10 10 10 10 10 10 10 10 10 2b 10
 10 10 10 10 10 10 10 10 10 10 10 10 10
 10 10 10 10 10 10 10 10 10 10 10 10 10
 00 00 00 00 00 10 10 10 00 00 00 00 00
@@ -11,9 +11,15 @@ mapstart
 10 10 10 10 10 10 10 10 10 10 10 10 10 5B
 10 10 10 10 10 10 10 10 10 10 10 1I 10
 10 10 10 10 10 10 10 10 10 10 10 10 10
-mapend
+map_end
 initpos=I
-locationsstart
+
+locations_start
 A=cave
 B=home
-locationsend
+locations_end
+
+charactersstart
+a=merchant
+b=blacksmith
+charactersend

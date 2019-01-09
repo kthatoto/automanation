@@ -34,13 +34,13 @@ begin
 
   $current_object_list = ObjectList.new
   $color = Color.new
+  $logger = Logger.new(logwin)
+  $store = Store.new
   map = Map.new(win, "town")
   pos = map.get_init_pos
   player = Player.new(win)
   status = Status.new(swin)
   menu = Menu.new(rightwin)
-  $logger = Logger.new(logwin)
-  $store = Store.new
 
   loop do
     wins.map(&:clear)

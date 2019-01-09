@@ -4,6 +4,7 @@ class Map
   @@chip_types = {
     wall: '0',
     ground: '1',
+    object: '2',
     location_change: '5',
   }
 
@@ -87,25 +88,46 @@ class Map
     @init_pos_char = nil
     map_loading = false
     locations_loading = false
+    characters_loading = false
+    things_loading = false
     File.open("#{@@mapchips_directory}/#{@current_location}.txt") do |file|
       file.read.split("\n").each do |line|
-        (map_loading = true; next) if line == 'mapstart'
-        (map_loading = false; next) if line == 'mapend'
+        next if line == ''
+        (map_loading = true; next) if line == 'map_start'
+        (map_loading = false; next) if line == 'map_end'
         (@mapchips << line.split; next) if map_loading
         if line.start_with?('initpos')
           @init_pos_char = line.split('=')[1]
           next
         end
-        (locations_loading = true; next) if line == 'locationsstart'
-        (locations_loading = false; next) if line == 'locationsend'
+        (locations_loading = true; next) if line == 'locations_start'
+        (locations_loading = false; next) if line == 'locations_end'
         if locations_loading
-          location = line.split('=')
-          @locations[location[0].to_sym] = location[1]
-          pos = find_pos_by_meta_char(location[0])
-          $current_object_list.push(:map, LocationChange.new(
-            @current_location, pos[:y], pos[:x], location[1]
+          char, slug = line.split('=')
+          @locations[char.to_sym] = slug
+          pos = find_pos_by_meta_char(char)
+          $current_object_list.push(:map, Object::LocationChange.new(
+            @current_location, pos[:y], pos[:x], slug
           ))
           next
+        end
+        (things_loading = true; next) if line == 'things_start'
+        (things_loading = false; next) if line == 'things_end'
+        if things_loading
+          char, slug = line.split('=')
+          pos = find_pos_by_meta_char(char)
+          $current_object_list.push(:map, Object::Thing.new(
+            @current_location, pos[:y], pos[:x], slug
+          ))
+        end
+        (characters_loading = true; next) if line == 'characters_start'
+        (characters_loading = false; next) if line == 'characters_end'
+        if characters_loading
+          char, slug = line.split('=')
+          pos = find_pos_by_meta_char(char)
+          $current_object_list.push(:map, Object::Character.new(
+            @current_location, pos[:y], pos[:x], slug
+          ))
         end
       end
     end
@@ -137,6 +159,8 @@ class Map
         $color.ground(@win, y, x * 2, "  ")
       when @@chip_types[:location_change]
         $color.bg_white(@win, y, x * 2, "  ")
+      when @@chip_types[:object]
+        $color.bg_blue(@win, y, x * 2, "  ")
       end
     rescue
     end

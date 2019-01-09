@@ -61,7 +61,7 @@ class Menu
     listy = 2
     $current_object_list.all_objects.each do |o|
       line = "[y:#{o.y.to_s.rjust(3)}, x:#{o.x.to_s.rjust(3)}]"
-      line << " #{o.dest}"
+      line << " #{o.name}"
       $color.normal(@win, listy, 1, line)
       listy += 1
     end

@@ -1,9 +1,9 @@
-class Object::LocationChange < Object
+class Object::Character < Object
   def initialize(location, y, x, slug)
     @location = location
     @y = y
     @x = x
     @slug = slug
-    @treadable = true
+    @treadable = false
   end
 end
