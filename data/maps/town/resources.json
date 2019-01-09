@@ -1,0 +1,11 @@
+{
+  "init_pos": "I",
+  "locations": {
+    "A": "cave",
+    "B": "home"
+  },
+  "characters": {
+    "a": "merchant",
+    "b": "blacksmith"
+  }
+}

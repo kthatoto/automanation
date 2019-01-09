@@ -1,5 +1,6 @@
+require 'json'
 class Map
-  @@mapchips_directory = "./data/maps"
+  @@map_directory = "./data/maps"
   @@invalid_chip_type_values = ['0', nil, false]
   @@chip_types = {
     wall: '0',
@@ -86,50 +87,34 @@ class Map
     @mapchips = []
     @locations = {}
     @init_pos_char = nil
-    map_loading = false
-    locations_loading = false
-    characters_loading = false
-    things_loading = false
-    File.open("#{@@mapchips_directory}/#{@current_location}.txt") do |file|
-      file.read.split("\n").each do |line|
-        next if line == ''
-        (map_loading = true; next) if line == 'map_start'
-        (map_loading = false; next) if line == 'map_end'
-        (@mapchips << line.split; next) if map_loading
-        if line.start_with?('initpos')
-          @init_pos_char = line.split('=')[1]
-          next
-        end
-        (locations_loading = true; next) if line == 'locations_start'
-        (locations_loading = false; next) if line == 'locations_end'
-        if locations_loading
-          char, slug = line.split('=')
-          @locations[char.to_sym] = slug
-          pos = find_pos_by_meta_char(char)
-          $current_object_list.push(:map, Object::LocationChange.new(
-            @current_location, pos[:y], pos[:x], slug
-          ))
-          next
-        end
-        (things_loading = true; next) if line == 'things_start'
-        (things_loading = false; next) if line == 'things_end'
-        if things_loading
-          char, slug = line.split('=')
-          pos = find_pos_by_meta_char(char)
-          $current_object_list.push(:map, Object::Thing.new(
-            @current_location, pos[:y], pos[:x], slug
-          ))
-        end
-        (characters_loading = true; next) if line == 'characters_start'
-        (characters_loading = false; next) if line == 'characters_end'
-        if characters_loading
-          char, slug = line.split('=')
-          pos = find_pos_by_meta_char(char)
-          $current_object_list.push(:map, Object::Character.new(
-            @current_location, pos[:y], pos[:x], slug
-          ))
-        end
-      end
+    map_file = nil
+    map_resources_json = nil
+    File.open("#{@@map_directory}/#{@current_location}/location.txt"){|f|
+      map_file = f.read
+    }
+    map_file.split("\n").each{|line| @mapchips << line.split}
+    File.open("#{@@map_directory}/#{@current_location}/resources.json"){|f|
+      map_resources_json = JSON.parse(f.read)
+    }
+    @init_pos_char = map_resources_json["init_pos"]
+    map_resources_json["locations"].to_a.each do |char, slug|
+      @locations[char.to_sym] = slug
+      pos = find_pos_by_meta_char(char)
+      $current_object_list.push(:map, Object::LocationChange.new(
+        @current_location, pos[:y], pos[:x], slug
+      ))
+    end
+    map_resources_json["things"].to_a.each do |char, slug|
+      pos = find_pos_by_meta_char(char)
+      $current_object_list.push(:map, Object::Thing.new(
+        @current_location, pos[:y], pos[:x], slug
+      ))
+    end
+    map_resources_json["characters"].to_a.each do |char, slug|
+      pos = find_pos_by_meta_char(char)
+      $current_object_list.push(:map, Object::Character.new(
+        @current_location, pos[:y], pos[:x], slug
+      ))
     end
   end
 

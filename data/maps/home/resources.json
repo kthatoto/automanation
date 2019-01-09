@@ -1,0 +1,9 @@
+{
+  "init_pos": "I",
+  "locations": {
+    "A": "town"
+  },
+  "things": {
+    "a": "bed"
+  }
+}

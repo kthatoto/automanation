@@ -1,16 +1,5 @@
-map_start
 00 10 10 10 10 10 10 10 10 10 10 10 2a
 00 10 10 10 10 10 10 10 10 10 10 10 10
 5A 10 10 10 10 10 10 10 10 10 10 1I 10
 00 10 10 10 10 10 10 10 10 10 10 10 10
 00 10 10 10 10 10 10 10 10 10 10 10 10
-map_end
-initpos=I
-
-locations_start
-A=town
-locations_end
-
-things_start
-a=bed
-things_end
